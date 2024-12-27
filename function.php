@@ -34,3 +34,9 @@ function getRecipes(array $recipes): array
 
     return $valid_recipes;
 }
+
+function redirectToUrl($url)
+{
+    header("Location: $url");
+    exit; // Important pour stopper l'exécution du script après une redirection
+}

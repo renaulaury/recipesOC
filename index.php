@@ -5,47 +5,40 @@ require_once(__DIR__ . '/variable.php');
 require_once(__DIR__ . '/function.php');
 ?>
 
-<main>
-    <?php
-
-    if (isset($_POST["submit"])) { //Si on a cliqué sur valider
-        $email = filter_input(INPUT_POST, "email", FILTER_VALIDATE_EMAIL);
-        $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-
-        if ($email && $password) { //si email + mdp ok
-
-            foreach ($users as $user) { //Verif user dans bdd
-                if ($user['email'] == $email && $user['password'] == $password) {
-                    $_SESSION['logged'] = $user['email'];
-                    break;
-                }
-            }
-
-            // Si l'utilisateur n'est pas trouvé
-            if (!isset($_SESSION['logged'])) {
-                echo "Vos identifiants sont incorrects.";
-            }
-        } else {
-            echo "Veuillez vérifier vos identifiants.";
-        }
-    }
+<?php
+//gestion des erreurs
+try {
+    $mysqlClient = new PDO(
+        'mysql:host=localhost;dbname=recettelily;charset=utf8',
+        'root',
+        '',
+        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+    );
+} catch (Exception $e) {
+    die('Erreur : ' . $e->getMessage());
+}
 
 
-    if (isset($_SESSION['logged'])) {
-        //t affiches les recettes
-        foreach (getRecipes($recipes) as $recipe) : ?>
-            <article>
-                <h3><?= $recipe['title']; ?></h3>
-                <div><?= $recipe['recipe']; ?></div>
-                <i><?= displayAuthor($recipe['author'], $users); ?></i>
-            </article>
-    <?php endforeach;
-    } else {
-        echo "Connecte toi";
-    }
+// On récupère tout le contenu de la table recipes
+$sqlQuery = 'SELECT * FROM recette ORDER BY id_recette DESC LIMIT 3';
+$recipesStatement = $mysqlClient->prepare($sqlQuery);
+$recipesStatement->execute();
+$recipes = $recipesStatement->fetchAll();
 
-    ?>
+
+//t affiches les recettes
+foreach ($recipes as $recipe) : ?>
+    <article>
+        <h3><?= $recipe['nom_recette']; ?></h3>
+        <div><?= $recipe['temps_preparation']; ?></div>
+    </article>
+<?php endforeach; ?>
+
+<?php
+
+
+
+?>
 
 
 </main>

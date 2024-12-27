@@ -9,15 +9,21 @@
 
 <header>
     <nav>
-        <a hfref="index.php">Accueil</a>
-        <a href="login.php">Login</a>
+        <a href="index.php">Accueil</a>
+        <a href="addRecette.php">Ajouter une recette</a>
+
+        <?php
+        if (isset($_SESSION['logged'])) { ?>
+            <a href="logout.php">Deconnexion</a>
+        <?php } else { ?>
+            <a href="login.php">Login</a>
+        <?php } ?>
+
     </nav>
 </header>
 
 <body>
-    <?php
-    require_once __DIR__ . "/login.php";
-    ?>
+
 </body>
 
 <footer>Copyright</footer>
