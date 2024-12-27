@@ -1,3 +1,9 @@
+<?php
+session_start();
+require_once(__DIR__ . '/variable.php');
+require_once(__DIR__ . '/function.php');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +16,7 @@
 <header>
     <nav>
         <a href="index.php">Accueil</a>
-        <a href="addRecette.php">Ajouter une recette</a>
+
 
         <?php
         if (isset($_SESSION['logged'])) { ?>
@@ -23,7 +29,19 @@
 </header>
 
 <body>
-
+    <?php
+    //gestion des erreurs
+    try {
+        $mysqlClient = new PDO(
+            'mysql:host=localhost;dbname=recettelily;charset=utf8',
+            'root',
+            '',
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+        );
+    } catch (Exception $e) {
+        die('Erreur : ' . $e->getMessage());
+    }
+    ?>
 </body>
 
 <footer>Copyright</footer>
