@@ -1,9 +1,11 @@
 <?php
 require_once(__DIR__ . '/template.php');
 
-$id = $_GET['id_recette'] ?? null;
+$id = $_POST['id_recette'] ?? null;
 
 if ($id) {
-    $mep = $mysqlClient->query('DELETE FROM recipes WHERE recipe_id=:id')
+    $delete = $mysqlClient->prepare('DELETE FROM recette WHERE id_recette=:id');
+    $delete->execute(['id' => $id]);
 
+    header("Location:index.php");
 }
